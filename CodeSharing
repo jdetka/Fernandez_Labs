@@ -1,0 +1,50 @@
+#### Open the datafile ####
+df = read.csv(file.choose()) 
+#$% Open finder window <choose the file when it does>; read that file; 
+#$%@ name variabe df <which can stand for data frame or just data>       
+head(df) # preview the data 
+#$% First 6 rows by default
+str(df)  # examine data structure
+#$% df is now an abject 
+#$%@ It doesn't apear in the file pane, perhaps this is one of various techniques
+
+
+
+#### Combine the year, month, day vectors in the df dataframe #### 
+# into dash separated year-month-day date.  
+as.Date(with(df, paste(year, month, day,sep=" ")), "%Y %m %d")
+#$% ***as.Date(object to be converted == ***with(use data from df in environment <global environment?> 
+#$%@ <from new df$date column to be exact>, ..then you evaluate year, month, day columns by pasting) 
+#$%@! Finally, as.date formats it -- and in a format that is set up for POSIX to read       
+#$% I also removed the object <remove(df)> 
+#$%@ and then ran the code just like  >as.Date(with(df, paste(year, month, day,sep="-")), "%Y-%m-%d")
+#$%@! and also like              >as.Date(with(df$date, paste(year, month, day,sep="-")), "%Y-%m-%d")
+#$%@!) and they all produced the same result. 
+#$%@!)( Don't know why except that df$date is finally in the POSIX function below 
+head(df)  # preview the data again to see what happened. 
+str(df)   # note structure of data #$% created a new variable 
+
+#$% So the dash seperation in Y-m-d is helpful for the next lines of code or for POSIX?
+#$%@ Guess not. I deleted df and the export file again -- and ran as 
+#$%@!          df$date <- as.Date(with(df, paste(year, month, day,sep=" ")), "%Y %m %d")
+#$%@!) This also worked  >as.Date(with(df, paste(year, month, day,sep=" ")), "%Y %m %d")
+
+
+# Now the best part! 
+#### Make date time from date and time vectors #### 
+# using as.POSIXct format
+df$date_time = as.POSIXct(paste(df$date, df$time), format="%Y-%m-%d %H:%M")
+#$% Make a new date_time column
+#$% Here I tried without the dashes "%Y %m %d" 
+#$%@ and the code finally failed, produce NA in the column. 
+head(df); str(df)
+
+
+
+
+#### Make a new csv file. #### 
+# Using syntax write.csv(Your DataFrame,"Path where you'd like to export the DataFrame to/File Name.csv", row.names = FALSE)
+write.csv(df, "/Volumes/RX/_Projects/DetkaReadFiles/Export/export.example.date.time.data.csv", row.names = FALSE)
+
+#$% I assume df$date would be a new column and not a new row because this is default mode or inherent to R
+#$%@ How do we know this operation will be done for every row? Is this also inherent to R -- and convention when researchers set up data to be read?
