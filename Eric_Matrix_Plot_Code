@@ -1,0 +1,224 @@
+library(readxl)
+
+#### GOAL: Plot x = time, y = liters by day and by hour ####
+
+bucket_87 <- read_xlsx(path = paste0("C:\\E\\20\\Spring\\fog_met_data\\UCNR.87",
+                                     ".20190710.20190914.xlsx"),
+                       sheet = 1)
+## sorta nesting paste0() function in path argument for read_xlsx()
+## paste0("a", "b") == paste("a", "b", sep="") ## [1] TRUE
+bucket_88 <- read_xlsx(path = paste0("C:\\E\\20\\Spring\\fog_met_data\\UCNR.88",
+                                     ".20190710.20190914.xlsx"),
+                       sheet = 1)
+bucket_89 <- read_xlsx(path = paste0("C:\\E\\20\\Spring\\fog_met_data\\UCNR.89",
+                                     ".20190710.20190914.xlsx"),
+                       sheet = 1)
+bucket_90 <- read_xlsx(path = paste0("C:\\E\\20\\Spring\\fog_met_data\\UCNR.90",
+                                     ".20190710.20190914.xlsx"),
+                       sheet = 1)
+bucket_91 <- read_xlsx(path = paste0("C:\\E\\20\\Spring\\fog_met_data\\UCNR.91",
+                                     ".20190710.20190914.xlsx"),
+                       sheet = 1)
+bucket_92 <- read_xlsx(path = paste0("C:\\E\\20\\Spring\\fog_met_data\\UCNR.92",
+                                     ".20190710.20190913.xlsx"),
+                       sheet = 1)
+bucket_93 <- read_xlsx(path = paste0("C:\\E\\20\\Spring\\fog_met_data\\UCNR.93",
+                                     ".20190710.20190913.xlsx"),
+                       sheet = 1)
+bucket_94 <- read_xlsx(path = paste0("C:\\E\\20\\Spring\\fog_met_data\\UCNR.94",
+                                     ".20190710.20190913.xlsx"),
+                       sheet = 1)
+## That Eric had to perform certain tasks 9 times each, seems innefecient. Is there another way?
+## From the code it also seems that Eric might have had 9 seperate files with two var. each -- Date and LITERS
+
+#### Correct Dates and Hour ####
+# (then aggregate by date and hour) two operations for each bucket....
+
+bucket_87$Date_corr <-as.Date(lubridate::date(bucket_87$Date))
+bucket_87$hour_corr <- lubridate::hour(bucket_87$Date)
+## as.Date() s3 method for character? and get from the lubridate package date()
+## Detka would have used something like UCNRsheet$date_time <- as.POSIXct(as.factor(UCNRsheet$date_time),  format= "%m/%d/%y %H:%M", tz = 'UTC')
+## This is also all preperation for the way Eric wants to plot time on the x axis
+
+#### aggregate by date and hour ####
+b87_aggd <- aggregate(x = bucket_87$LITERS, 
+                      by = list(bucket_87$Date_corr, bucket_87$hour_corr), 
+                      FUN = sum)
+## aggregate() S3 method for data.frame?.. Object to agg. is var. LITERS.. by = components of matrix being created (date, hour).. FUN = sum "by"
+## Aggregate LITERS by date and hour
+
+colnames(b87_aggd) <- c("Date", "Hour", "sum_liters")
+## He has created a new matrix
+## This is the first "sum_liters" mentioned. Did Eric add this to his excel files?
+
+# sort by ascending date
+b87_aggd <- b87_aggd[order(b87_aggd$Date),]
+
+# ----------Bucket 88
+# Correct Dates and Hour
+bucket_88$Date_corr <-as.Date(lubridate::date(bucket_88$Date))
+bucket_88$hour_corr <- lubridate::hour(bucket_88$Date)
+
+# aggregate by date and hour
+b88_aggd <- aggregate(x = bucket_88$LITERS, 
+                      by = list(bucket_88$Date_corr, bucket_88$hour_corr), 
+                      FUN = sum)
+colnames(b88_aggd) <- c("Date", "Hour", "sum_liters")
+# sort by ascending date
+b88_aggd <- b88_aggd[order(b88_aggd$Date),]
+
+# ----------Bucket 89
+# Correct Dates and Hour
+bucket_89$Date_corr <-as.Date(lubridate::date(bucket_89$Date))
+bucket_89$hour_corr <- lubridate::hour(bucket_89$Date)
+
+# aggregate by date and hour
+b89_aggd <- aggregate(x = bucket_89$LITERS, 
+                      by = list(bucket_89$Date_corr, bucket_89$hour_corr), 
+                      FUN = sum)
+colnames(b89_aggd) <- c("Date", "Hour", "sum_liters")
+# sort by ascending date
+b89_aggd <- b89_aggd[order(b89_aggd$Date),]
+
+# ----------Bucket 90
+# Correct Dates and Hour
+bucket_90$Date_corr <-as.Date(lubridate::date(bucket_90$Date))
+bucket_90$hour_corr <- lubridate::hour(bucket_90$Date)
+
+# aggregate by date and hour
+b90_aggd <- aggregate(x = bucket_90$LITERS, 
+                      by = list(bucket_90$Date_corr, bucket_90$hour_corr), 
+                      FUN = sum)
+colnames(b90_aggd) <- c("Date", "Hour", "sum_liters")
+# sort by ascending date
+b90_aggd <- b90_aggd[order(b90_aggd$Date),]
+
+# ----------Bucket 91
+# Correct Dates and Hour
+bucket_91$Date_corr <-as.Date(lubridate::date(bucket_91$Date))
+bucket_91$hour_corr <- lubridate::hour(bucket_91$Date)
+
+# aggregate by date and hour
+b91_aggd <- aggregate(x = bucket_91$LITERS, 
+                      by = list(bucket_91$Date_corr, bucket_91$hour_corr), 
+                      FUN = sum)
+colnames(b91_aggd) <- c("Date", "Hour", "sum_liters")
+# sort by ascending date
+b91_aggd <- b91_aggd[order(b91_aggd$Date),]
+
+# ----------Bucket 92
+# Correct Dates and Hour
+bucket_92$Date_corr <-as.Date(lubridate::date(bucket_92$Date))
+bucket_92$hour_corr <- lubridate::hour(bucket_92$Date)
+
+# aggregate by date and hour
+b92_aggd <- aggregate(x = bucket_92$LITERS, 
+                      by = list(bucket_92$Date_corr, bucket_92$hour_corr), 
+                      FUN = sum)
+colnames(b92_aggd) <- c("Date", "Hour", "sum_liters")
+# sort by ascending date
+b92_aggd <- b92_aggd[order(b92_aggd$Date),]
+
+# ----------Bucket 93
+# Correct Dates and Hour
+bucket_93$Date_corr <-as.Date(lubridate::date(bucket_93$Date))
+bucket_93$hour_corr <- lubridate::hour(bucket_93$Date)
+
+# aggregate by date and hour
+b93_aggd <- aggregate(x = bucket_93$LITERS, 
+                      by = list(bucket_93$Date_corr, bucket_93$hour_corr), 
+                      FUN = sum)
+colnames(b93_aggd) <- c("Date", "Hour", "sum_liters")
+# sort by ascending date
+b93_aggd <- b93_aggd[order(b93_aggd$Date),]
+
+# ----------Bucket 94
+# Correct Dates and Hour
+bucket_94$Date_corr <-as.Date(lubridate::date(bucket_94$Date))
+bucket_94$hour_corr <- lubridate::hour(bucket_94$Date)
+
+# aggregate by date and hour
+b94_aggd <- aggregate(x = bucket_94$LITERS, 
+                      by = list(bucket_94$Date_corr, bucket_94$hour_corr), 
+                      FUN = sum)
+colnames(b94_aggd) <- c("Date", "Hour", "sum_liters")
+# sort by ascending date
+b94_aggd <- b94_aggd[order(b94_aggd$Date),]
+
+#### ------add 0 dates #### 
+
+date_range <- seq(from = as.Date("2019-07-10"),
+                  to = as.Date("2019-09-14"), 
+                  by = 1)
+#h
+hours_per_day <-  seq(from = 0, to = 23, by = 1)
+hours.w.0s <- rep(hours_per_day, 
+                  times  = length(full_dates))
+## replicate the sequence.. for each day? what is full_dates 
+## First mention of "full dates"
+                  
+# create empty list
+b87_w0s <- list()
+# loop all dates 24 times for the hours in each day
+for(i in 1:length(date_range)){
+  b87_w0s[[i]] <- data.frame(x=rep(date_range[i], times = 24))
+}
+
+
+library(dplyr)
+#### create a vector of the dates repeated 24 times for each date ####
+b87_final <- bind_rows(b87_w0s, .id = "X")
+b87_final <- as.data.frame(b87_final[,-1]) # force it to be a data.frame and remove first column
+colnames(b87_final) <- c("Date") # Rename column to Date
+b87_final$Hour <- hours.w.0s # Add the hour to each row
+
+# create an empty column to put the liters
+b87_final$Liters <- rep(NA, length(b87_final$Date))
+
+# create two colmns to compare by in the if statement
+b87_final$Dt_hr <- paste(b87_final$Date,b87_final$Hour,sep =".")
+b87_aggd$Dt_hr <- paste(b87_aggd$Date,b87_aggd$Hour,sep =".")
+
+# If statement that grabs the liters by hour from the aggd table
+for (i in 1:nrow(b87_final)){
+  b87_final$Liters[i] <- ifelse(b87_final$Dt_hr[i] %in% b87_aggd$Dt_hr,
+                                b87_aggd$sum_liters[b87_aggd$Dt_hr ==
+                                                      b87_final$Dt_hr[i]],0)
+}
+
+# remove the dtHr row from final data frame
+b87_final <- b87_final[,-4]
+
+#### Matrix plot ####
+mat_vals <- b87_final$Liters
+mat_vals_4plot <- matrix(mat_vals,nrow = 67,ncol = 24, byrow = TRUE)
+
+yLabels <- date_range
+xLabels <- hours_per_day            
+
+min <- min(b87_final$Liters) 
+max <- max(b87_final$Liters) 
+
+ColorRamp <- rgb(seq(0.95,0.99,length=50),  # Red
+                 seq(0.95,0.05,length=50),  # Green
+                 seq(0.95,0.05,length=50))  # Blue
+ColorLevels <- seq(min, max, length=length(ColorRamp))
+
+layout(matrix(data=c(1,2), nrow=1, ncol=2), widths=c(4,1),
+       heights=c(1,1))
+
+par(mar = c(5,8,2.5,3), font = 2)
+image(1:ncol(mat_vals_4plot), 1:nrow(mat_vals_4plot), t(mat_vals_4plot),
+      col=ColorRamp, xlab = "Hour", ylab = "",
+      axes=FALSE, zlim=c(min,max),
+      main= NA)
+
+axis(side = 1, at=seq(1,length(xLabels),1), labels=xLabels,
+     cex.axis=1.0)
+axis(side = 2, at=seq(1,length(yLabels),1), labels=yLabels, las= 1,
+     cex.axis=1)
+
+par(mar = c(3,2.5,2.5,2))
+image(1, ColorLevels,
+      matrix(data=ColorLevels, ncol=length(ColorLevels),nrow=1),
+      col=ColorRamp,xlab="",ylab="",xaxt="n", las = 1)
