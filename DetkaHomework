@@ -1,0 +1,114 @@
+#### Choose the data file and name df ####
+df = read.csv(file.choose())
+head(df) # preview the data
+str(df)  # examine data structure
+
+
+
+#### Convert date_time to proper POSIX format #### 
+#assuming time zone is UTC. 
+df$date_time <- as.POSIXct(as.factor(df$date_time),  format= "%m/%d/%y %H:%M", tz = 'UTC')
+head(df) # preview the data
+str(df)  # examine data structure
+
+
+
+data.frame(colnames(df))
+#### Delete and Rename Variable Columns ####
+df <- df[-(14:15)]
+# why can't i do it by column name > df <- df[-(nameofcolumn)] or > df <- df[-(df$nameofcolumn)]
+colnames(df)[colnames(df) %in%
+               c("Av_Solar_Radiation_wattpersquaremeter", 
+                 "Precipitation_mm",
+                 "Air_Speed_meterpersecond",
+                 "Av_Air_Temperature_degreecelsius"
+               )] <- 
+  c("Av_Sol_Rad_W/sqm", 
+    "Precip_mm",
+    "Air_Speed_m/s",
+    "Av_Air_Temp_C")
+data.frame(colnames(df))
+#no matter what I tried, I couldn't get this to work:
+#! library(dplyr)
+#!df <- df %>% rename(Av_Sol_Rad_W/sqm = "Av_Solar_Radiation_wattpersquaremeter", 
+#!                          Precip_mm = "Precipitation_mm",
+#!                          Air_Speed_m/s = "Air_Speed_meterpersecond",
+#!                          Av_Air_Temp_C = "Av_Air_Temperature_degreecelsius"
+#!)
+#! or even...   >rename(df, c(Av_Sol_Rad_W/sqm = Av_Solar_Radiation_wattpersquaremeter))
+#$%@! Error: unexpected '=' in
+
+
+
+#### Convert mm of rain data to liters ####
+#No specs on the dendra site, so I assume the measurment device is one square meter
+df$Precip_L <- 1*df$Precip_mm
+str(df) #I pressed cmd return on this one. (it was also my forst guess. YAY :)
+#or
+df$Precip_L <- with(df, 1 * Precip_mm)
+str(df)
+#or
+df %>% 
+  mutate(Precip_L = Precip_mm*1)
+
+#But Why has this been happening:
+#11 Av_Sol_Rad_W/sqm.1
+#12        Precip_mm.1
+#   I didn't put no ".1" and the values are rediculus
+df <- df[-c(11,12)]
+data.frame(colnames(df))
+
+#### Create a .csv or export to a chosen folder ####
+write.csv(df, file = "dfexport.csv", row.names = FALSE)
+write.csv(df, file = "/Volumes/RX/_Projects/DetkaHomework/Export/dfexport.csv", row.names = FALSE)
+# But in both instances the date variable column is missing
+write.csv(paste(df), file = "/Volumes/RX/_Projects/DetkaHomework/Export/dfexport.csv", row.names = FALSE)
+# nope, just a column with multiple c(0,0,0,0, etc.)
+str(df)
+# oh boy, at some point I erased the dates
+#### So I don't know ####
+# why I was getting weird stuff
+# What I did was reset and go through the code step by step
+# For some reason all worked the second time
+# yay
+
+
+
+#### Change variable order, then export again ####
+df2[,c(1,14,2,3,4,5,6,7,8,9,10,12,13,14)]
+data.frame(colnames(df))
+#nope
+df <- df[c(1,14,2,3,4,5,6,7,8,9,10,12,13,14)]
+data.frame(colnames(df))
+# YAy, Got it
+# but isn't there a more elegant way?
+write.csv(df, file = "/Volumes/RX/_Projects/DetkaHomework/Export/dfexport.csv", row.names = FALSE)
+
+#### Haven't gotten to this yet ####
+#(but I was able to replicate the exact below plot on my computer)
+library(ggplot2)
+WindSpeed<-c(1,2,3,5,7,2,3,4,5,6,7,8)
+WindDir<-c(180,90,320,200,350,10,270,50,9,100,110,129)
+
+TimeStamp<-c("2018-01-02 01:00","2018-01-02 02:00",
+             "2018-01-02 03:00","2018-01-02 04:00",
+             "2018-01-02 05:00","2018-01-02 06:00",
+             "2018-01-02 07:00","2018-01-02 08:00",
+             "2018-01-02 09:00","2018-01-02 10:00",
+             "2018-01-02 11:00","2018-01-02 12:00")
+
+DF<-data.frame(TimeStamp,WindSpeed, WindDir)
+
+DF$TimeStamp <- as.POSIXct(DF$TimeStamp)
+
+ggplot(DF) +
+  geom_segment(aes(x = TimeStamp,
+                   y = 0,
+                   xend = TimeStamp + lubridate::dhours(WindSpeed * 1 * -cos((90-WindDir) / 360 * 2 * pi)),
+                   yend = WindSpeed * 1 * -sin((90-WindDir) / 360 * 2 * pi),
+                   col = factor(TimeStamp)
+  ),
+  arrow = arrow(length = unit(0.5, "cm")))  +
+  geom_point(aes(TimeStamp, 0), size = 1) +
+  coord_fixed(3600) +
+  theme(legend.position = "none")
