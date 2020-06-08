@@ -17,6 +17,11 @@ data.frame(colnames(df))
 #### Delete and Rename Variable Columns ####
 df <- df[-(14:15)]
 # why can't i do it by column name > df <- df[-(nameofcolumn)] or > df <- df[-(df$nameofcolumn)]
+
+# You can rename without dplyr. Something like. 
+names(df)[names(df)=="old_name_col"] <- "new_name_col"
+
+
 colnames(df)[colnames(df) %in%
                c("Av_Solar_Radiation_wattpersquaremeter", 
                  "Precipitation_mm",
