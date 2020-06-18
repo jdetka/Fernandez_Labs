@@ -25,17 +25,16 @@ install.packages("readxl", dependencies = TRUE); library("readxl")  # Install pa
 bucket.82.twingates <- read_excel("C:/Users/jdetk/Desktop/Twin Gates_20190701_20200617.xlsx",skip=1)  # Import, skip first line 
 
 # Aggregate data hourly as sum of events. 
-bucket.82.twingates <- aggregate(bucket.82.twingates$'Events (State)', list(hour=cut(bucket.82.twingates$Date, "1 hour")), sum)
+bucket.82.twingates.hrly <- aggregate(bucket.82.twingates$'Events (State)', list(hour=cut(bucket.82.twingates$Date, "1 hour")), sum)
 
 # Rename the columns 
-colnames(bucket.82.twingates) <- c("Date", "Total_Hourly_Events")
+colnames(bucket.82.twingates.hrly) <- c("Date", "Total_Hourly_Events")
 
 # Optional export the data as a csv. 
-write.csv(bucket.82.twingates,"C:/Users/jdetk/Desktop/bucket.82.twingates.hourly.csv", row.names = FALSE)
+write.csv(bucket.82.twingates.hrly,"C:/Users/jdetk/Desktop/bucket.82.twingates.hourly.csv", row.names = FALSE)
 
 # Optional: View data 
-View(bucket.82.twingates)
-
+View(bucket.82.twingates.hrly)
 
 
 
